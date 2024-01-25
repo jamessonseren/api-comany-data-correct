@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { ICompanyDataRepository } from "../../repositories/company-data.repository";
 import { GetCompanyDataUsecase } from "./get-company-data.usecase";
-import { logger } from "../../../../../utils/logger";
 
 export class GetCompanyDataController{
     constructor(
@@ -22,7 +21,6 @@ export class GetCompanyDataController{
             return res.json(companyData)
 
         }catch(err: any){
-            logger.error(err.stack)
             return res.status(err.statusCode).json({
                 error: err.message
             })
