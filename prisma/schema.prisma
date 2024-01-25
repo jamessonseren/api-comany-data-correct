@@ -15,57 +15,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model CorrectAdmin {
-  uuid     String  @id @default(uuid())
-  name     String
-  userName String  @unique
-  email    String  @unique
-  password String
-  isAdmin  Boolean @default(true)
 
-  @@map("correct_admin")
-}
 
-enum Permissions {
-  all
-  sales
-  finances
-  marketing
-  benefits
-  transports
-  allPartners
-  allEmployers
-}
-
-model BusinessUser {
-  uuid               String        @id @default(uuid())
-  business_info_uuid String?
-  is_admin           Boolean       @default(false)
-  business_document  String
-  admin_document     String?       @unique
-  name               String?
-  email              String?       @unique
-  user_name          String
-  password           String
-  function           String?
-  permissions        Permissions[] @default([all])
-  is_client          Boolean       @default(false)
-  is_active          Boolean       @default(true)
-  created_at         DateTime?     @default(now())
-  updated_at         DateTime?     @updatedAt
-
-  BusinessInfo BusinessInfo? @relation(fields: [business_info_uuid], references: [uuid])
-
-  @@map("business_users")
-}
-
-model BusinessCategory {
-  uuid          String         @id @default(uuid())
-  category_name String
-  BusinessInfo  BusinessInfo[]
-
-  @@map("business_category")
-}
 
 model BusinessInfo {
   uuid                 String              @id @default(uuid())
@@ -85,12 +36,6 @@ model BusinessInfo {
   business_type        BusinessTypeOptions
 
   Address          Address?         @relation(fields: [address_uuid], references: [uuid])
-  ContractInfo     ContractInfo?    @relation(fields: [contract_info_uuid], references: [uuid])
-  BusinessCategory BusinessCategory @relation(fields: [business_category_id], references: [uuid])
-  BusinessUser     BusinessUser[]
-  UserInfo         UserInfo[]
-  Benefit          Benefit[]
-  Transactions     Transactions[]
 
   @@map("business_data")
 }
@@ -113,115 +58,7 @@ model Address {
   state        String
   country      String
   BusinessInfo BusinessInfo[]
-  UserInfo     UserInfo[]
 
   @@map("addresses")
 }
 
-model UserInfo {
-  uuid                  String     @id @default(uuid())
-  business_info_uuid    String?
-  address_uuid          String?
-  document              String     @unique
-  document2             String?    @unique
-  document3             String?    @unique
-  first_name            String?
-  last_name             String?
-  display_name          String?
-  internal_company_code String?
-  gender                String?
-  date_of_birth         DateTime
-  phone                 String?
-  salary                String?
-  company_owner         Boolean    @default(false)
-  status                Boolean    @default(true)
-  driver_license        String?    @unique
-  function              String?
-  authenticated         Boolean    @default(false)
-  marital_status        String?
-  dependents_quantity   Int        @default(0)
-  UserAuth              UserAuth[]
-
-  BusinessInfo BusinessInfo?  @relation(fields: [business_info_uuid], references: [uuid])
-  Address      Address?       @relation(fields: [address_uuid], references: [uuid])
-  UserWallet   UserWallet[]
-  Transactions Transactions[]
-
-  @@map("user_info")
-}
-
-model UserAuth {
-  uuid           String  @id @default(uuid())
-  user_info_uuid String?
-  document       String  @unique
-  email          String  @unique
-  password       String
-
-  created_at DateTime  @default(now())
-  updated_at DateTime? @updatedAt
-
-  UserInfo UserInfo? @relation(fields: [user_info_uuid], references: [uuid])
-
-  @@map("users_auth")
-}
-
-model Benefit {
-  uuid               String       @id @default(uuid())
-  contract_info_uuid String
-  business_info_uuid String
-  benefit_name       String
-  benefit_type       String
-  created_at         DateTime     @default(now())
-  updated_at         DateTime?    @updatedAt
-  UserWallet         UserWallet[]
-
-  ContractInfo ContractInfo @relation(fields: [contract_info_uuid], references: [uuid])
-  BusinessInfo BusinessInfo @relation(fields: [business_info_uuid], references: [uuid])
-
-  @@map("benefits")
-}
-
-model UserWallet {
-  uuid           String    @id @default(uuid())
-  user_info_uuid String
-  benefit_uuid   String
-  balance        Int
-  created_at     DateTime  @default(now())
-  updated_at     DateTime? @updatedAt
-
-  UserInfo     UserInfo       @relation(fields: [user_info_uuid], references: [uuid])
-  Benefit      Benefit        @relation(fields: [benefit_uuid], references: [uuid])
-  Transactions Transactions[]
-
-  @@map("users_wallet")
-}
-
-model ContractInfo {
-  uuid         String         @id @default(uuid())
-  name         String
-  version      String
-  assigned_at  DateTime       @default(now())
-  BusinessInfo BusinessInfo[]
-  Benefit      Benefit[]
-
-  @@map("contract_info")
-}
-
-model Transactions {
-  uuid               String    @id @default(uuid())
-  payer_wallet_uuid  String
-  favored_uuid       String
-  business_info_uuid String
-  amount             Int
-  fee_amount         Int
-  cashback           Int
-  status             Boolean
-  created_at         DateTime? @default(now())
-  updated_at         DateTime? @updatedAt
-
-  UserWallet   UserWallet   @relation(fields: [payer_wallet_uuid], references: [uuid])
-  UserInfo     UserInfo     @relation(fields: [favored_uuid], references: [uuid])
-  BusinessInfo BusinessInfo @relation(fields: [business_info_uuid], references: [uuid])
-
-  @@map("transactions")
-}
