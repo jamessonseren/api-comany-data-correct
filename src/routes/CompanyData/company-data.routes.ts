@@ -6,9 +6,9 @@ import { deleteCompanyDataController } from "../../modules/Company/CompanyData/u
 export const companyDataRouter = Router()
 
 //create company data
-companyDataRouter.post('/company-data', async (request, response) => {
-    await companyDataController.handle(request, response)
-})
+// companyDataRouter.post('/company-data', async (request, response) => {
+//     await companyDataController.handle(request, response)
+// })
 
 companyDataRouter.get("/company-data", async (request, response) => {
     await getCompanyDataController.handle(request, response)

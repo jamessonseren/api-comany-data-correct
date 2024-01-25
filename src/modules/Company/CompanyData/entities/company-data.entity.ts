@@ -39,11 +39,14 @@ export class CompanyDataEntity {
 
     private constructor(props: CompanyDataProps) {
 
+        if(!props.business_category_id) throw new CustomError("Business category is required", 400)
         if (!props.fantasy_name) throw new CustomError("Fantasy name is required", 400)
+        if(!props.document) throw new CustomError("Company Document is required", 400)
         if (!props.classification) throw new CustomError("Company classification is required", 400)
         if (!props.colaborators_number) throw new CustomError("Total employees is required", 400)
-        if(props.email) throw new CustomError("Email is required", 400)
         if (!props.phone_1) throw new CustomError("Telephone 1 is required", 400)
+        if(!props.email) throw new CustomError("Email is required", 400)
+        if(!props.business_type) throw new CustomError("Business type is required", 400)
 
         this.uuid = randomUUID()
         this.address_uuid = props.address_uuid
